@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.contactlist.AddContact;
+import com.example.contactlist.ContactList;
 import com.example.contactlist.MainActivity;
 import com.example.contactlist.Models.ContactListModel;
 import com.example.contactlist.R;
@@ -35,19 +37,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             phoneNum = view.findViewById(R.id.textNumber);
             email = view.findViewById(R.id.textEmail);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    FloatingActionButton fab = view.findViewById(R.id.fab);
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            System.out.println("test");
-                        }
-                    });
-                }
-            });
         }
+
     }
 
 
@@ -66,6 +57,18 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.nameTxt.setText(name);
         holder.phoneNum.setText(phoneNum);
         holder.email.setText(email);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("test");
+                Intent intent = new Intent(view.getContext(), AddContact.class);
+                intent.putExtra("name",name);
+                intent.putExtra("phn",phoneNum);
+                intent.putExtra("email",email);
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
