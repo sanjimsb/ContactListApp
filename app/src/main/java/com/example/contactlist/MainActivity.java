@@ -8,16 +8,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.contactlist.Adapters.ContactListAdapter;
 import com.example.contactlist.Models.ContactListModel;
 import com.example.contactlist.Singleton.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Singleton singletonInstance;
     ListView listView;
     ContactListAdapter adapter;
+    TextView getTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +41,16 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.list);
         contactList = new ArrayList<ContactListModel>();
         singletonInstance = Singleton.getInstance();
+        if(loadData() != null) {
+            singletonInstance.setContactList(loadData());
+        }
         if(singletonInstance.getContactList() != null) {
             contactList = singletonInstance.getContactList();
         }
         setContactList();
         System.out.println("Test");
         setAdapter();
+        setText();
         FloatingActionButton fab = findViewById(R.id.fab);
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -80,5 +91,29 @@ public class MainActivity extends AppCompatActivity {
     public void setContactList() {
         singletonInstance.setContactList(contactList);
         System.out.println(contactList);
+    }
+
+    public void setText() {
+        getTextView = findViewById(R.id.textview);
+//        getTextView.
+    }
+
+    public ArrayList<ContactListModel> loadData() {
+        // shared preferences.
+        SharedPreferences sharedPreferences = getSharedPreferences("UserInput", Context.MODE_PRIVATE);
+
+        // creating a variable for gson.
+        Gson gson = new Gson();
+
+        // shared prefs if not present setting it as null.
+        String json = sharedPreferences.getString("ContactList", null);
+
+        // get the type of our array list.
+        Type type = new TypeToken<ArrayList<ContactListModel>>() {}.getType();
+
+        // getting data from gson and saving it to array list
+        ArrayList<ContactListModel> getContactArrayList = gson.fromJson(json, type);
+
+        return getContactArrayList;
     }
 }

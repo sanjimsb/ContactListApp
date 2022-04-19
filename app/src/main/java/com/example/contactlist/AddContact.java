@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -16,8 +18,12 @@ import android.widget.TextView;
 import com.example.contactlist.Adapters.ContactListAdapter;
 import com.example.contactlist.Models.ContactListModel;
 import com.example.contactlist.Singleton.Singleton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AddContact extends AppCompatActivity  implements View.OnClickListener {
     Intent intent;
@@ -28,6 +34,9 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
     private Singleton singletonInstance;
     private ArrayList<ContactListModel> contactList;
     private RecyclerView recyclerView;
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "UserInput";
+    public static final String PREFERENCE_KEY = "ContactList";
     ContactListAdapter adapter;
 
     @Override
@@ -67,6 +76,7 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
                 contactList.add(new ContactListModel(getName,455, getEmail));
                 singletonInstance.setContactList(contactList);
                 System.out.println(singletonInstance.getContactList().size());
+                saveData();
                 setAdapter();
                 break;
         }
@@ -79,6 +89,15 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         overridePendingTransition(0, 0);
         startActivity(intent);
         overridePendingTransition(0, 0);
+    }
 
+    // saves dice added by the users to the shared preference.
+    private void saveData() {
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(contactList);
+        editor.putString(PREFERENCE_KEY,json);
+        editor.commit();
     }
 }
