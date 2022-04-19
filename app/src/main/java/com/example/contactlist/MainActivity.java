@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         setContactList();
         System.out.println("Test");
         setAdapter();
-        setText();
         FloatingActionButton fab = findViewById(R.id.fab);
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -91,11 +90,6 @@ public class MainActivity extends AppCompatActivity {
     public void setContactList() {
         singletonInstance.setContactList(contactList);
         System.out.println(contactList);
-    }
-
-    public void setText() {
-        getTextView = findViewById(R.id.textview);
-//        getTextView.
     }
 
     public ArrayList<ContactListModel> loadData() {

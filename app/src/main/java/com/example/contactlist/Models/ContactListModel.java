@@ -2,10 +2,11 @@ package com.example.contactlist.Models;
 
 public class ContactListModel {
     private String name;
-    private int phoneNum;
+    private String phoneNum;
     private String email;
+    private String contactType;
 
-    public ContactListModel(String name, int phoneNum, String email) {
+    public ContactListModel(String name, String phoneNum, String email) {
         this.name = name;
         this.phoneNum = phoneNum;
         this.email = email;
@@ -19,11 +20,11 @@ public class ContactListModel {
         this.name = name;
     }
 
-    public int getPhoneNum() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(int phoneNum) {
+    public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
     }
 
@@ -33,5 +34,13 @@ public class ContactListModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(String contactType) {
+        this.contactType = contactType;
     }
 }

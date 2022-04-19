@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/contactListView"
     android:layout_width="match_parent"
     android:layout_height="120dp"
     android:padding="16dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="9dp">
-
-        <TextView
-            android:id="@+id/textview"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:gravity="center"
-            android:text="D"
-            android:textSize="30sp" />
-
-    </androidx.cardview.widget.CardView>
+    <com.github.ivbaranov.mli.MaterialLetterIcon
+        android:id="@+id/firstName"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        />
 
     <TextView
         android:id="@+id/textName"
@@ -46,11 +38,11 @@
         tools:text="Contact Number" />
 
     <TextView
-        android:id="@+id/textTypeofContact"
+        android:id="@+id/contactTypes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
         android:layout_below="@+id/textName"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="2.5dp"
         android:layout_toRightOf="@+id/textNumber"
         android:textColor="#1A237E"

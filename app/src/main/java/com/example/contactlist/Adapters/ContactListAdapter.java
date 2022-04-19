@@ -1,6 +1,7 @@
 package com.example.contactlist.Adapters;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,11 @@ import com.example.contactlist.ContactList;
 import com.example.contactlist.MainActivity;
 import com.example.contactlist.Models.ContactListModel;
 import com.example.contactlist.R;
+import com.github.ivbaranov.mli.MaterialLetterIcon;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.MyViewHolder> {
     private ArrayList<ContactListModel> contactList;
@@ -30,12 +33,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         private TextView nameTxt;
         private TextView phoneNum;
         private TextView email;
+        private MaterialLetterIcon firstLetterHolder;
 
         public MyViewHolder(final View view) {
             super(view);
             nameTxt = view.findViewById(R.id.textName);
             phoneNum = view.findViewById(R.id.textNumber);
             email = view.findViewById(R.id.textEmail);
+            firstLetterHolder = view.findViewById(R.id.firstName);
 
         }
 
@@ -58,15 +63,19 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.phoneNum.setText(phoneNum);
         holder.email.setText(email);
 
+        Random rnd = new Random();
+        int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+        holder.firstLetterHolder.setLetter(String.valueOf(name.charAt(0)));
+        holder.firstLetterHolder.setShapeColor(color);
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("test");
                 Intent intent = new Intent(view.getContext(), AddContact.class);
                 intent.putExtra("name",name);
                 intent.putExtra("phn",phoneNum);
                 intent.putExtra("email",email);
-                intent.putExtra("position",position);
+                intent.putExtra("position",String.valueOf(holder.getAdapterPosition()));
                 view.getContext().startActivity(intent);
             }
         });

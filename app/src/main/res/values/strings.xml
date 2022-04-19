@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ContactList</string>
+    <string-array name="contactTypes">
+        <item>Home</item>
+        <item>Office</item>
+        <item>Mobile</item>
+    </string-array>
 </resources>

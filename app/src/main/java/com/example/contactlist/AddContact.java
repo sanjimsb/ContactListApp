@@ -56,11 +56,13 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         nameTxt = findViewById(R.id.nameEditText);
         phoneNum = findViewById(R.id.phoneEditText);
         email = findViewById(R.id.emailEditText);
-        System.out.println();intent.getStringExtra("position");
 
-        nameTxt.setText(intent.getStringExtra("name"));
-        phoneNum.setText(intent.getStringExtra("phn"));
-        email.setText(intent.getStringExtra("email"));
+        if(intent.getExtras() != null) {
+            currentPosition = Integer.parseInt(intent.getStringExtra("position"));
+            nameTxt.setText(intent.getStringExtra("name"));
+            phoneNum.setText(intent.getStringExtra("phn"));
+            email.setText(intent.getStringExtra("email"));
+        }
 
 
         singletonInstance = Singleton.getInstance();
@@ -73,15 +75,17 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
 
     public void onClick(View view) {
         String getName = String.valueOf(nameTxt.getText());
-//        Integer getPhn = Integer.valueOf(phoneNum.getText());
         String getEmail =  String.valueOf(email.getText());
         switch(view.getId()) {
             case R.id.button:
                 isFieldValid = formValidation();
                 if (isFieldValid) {
-                    System.out.println(contactList.get(0));
-                    contactList.remove(currentPosition);
-                    contactList.add(currentPosition, new ContactListModel(getName, 455, getEmail));
+                    if(intent.getExtras() != null) {
+                        contactList.remove(currentPosition);
+                        contactList.add(currentPosition, new ContactListModel(getName, phoneNum.getText().toString(), getEmail));
+                    } else {
+                        contactList.add(new ContactListModel(getName, phoneNum.getText().toString(), getEmail));
+                    }
                     singletonInstance.setContactList(contactList);
                     System.out.println(singletonInstance.getContactList().size());
                     saveData();
@@ -125,7 +129,7 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         overridePendingTransition(0, 0);
     }
 
-    // saves dice added by the users to the shared preference.
+    // saves contact details added by the users to the shared preference.
     private void saveData() {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
