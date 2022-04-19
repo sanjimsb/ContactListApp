@@ -24,6 +24,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddContact extends AppCompatActivity  implements View.OnClickListener {
     Intent intent;
@@ -34,6 +36,8 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
     private Singleton singletonInstance;
     private ArrayList<ContactListModel> contactList;
     private RecyclerView recyclerView;
+    private int currentPosition;
+    private boolean isFieldValid;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "UserInput";
     public static final String PREFERENCE_KEY = "ContactList";
@@ -52,6 +56,7 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         nameTxt = findViewById(R.id.nameEditText);
         phoneNum = findViewById(R.id.phoneEditText);
         email = findViewById(R.id.emailEditText);
+        System.out.println();intent.getStringExtra("position");
 
         nameTxt.setText(intent.getStringExtra("name"));
         phoneNum.setText(intent.getStringExtra("phn"));
@@ -67,19 +72,48 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
     }
 
     public void onClick(View view) {
-        int getCurrentDice;
-        String getName = String.valueOf( nameTxt.getText());
-//        int getPhn = (int) phoneNum.getText();
+        String getName = String.valueOf(nameTxt.getText());
+//        Integer getPhn = Integer.valueOf(phoneNum.getText());
         String getEmail =  String.valueOf(email.getText());
         switch(view.getId()) {
             case R.id.button:
-                contactList.add(new ContactListModel(getName,455, getEmail));
-                singletonInstance.setContactList(contactList);
-                System.out.println(singletonInstance.getContactList().size());
-                saveData();
-                setAdapter();
+                isFieldValid = formValidation();
+                if (isFieldValid) {
+                    System.out.println(contactList.get(0));
+                    contactList.remove(currentPosition);
+                    contactList.add(currentPosition, new ContactListModel(getName, 455, getEmail));
+                    singletonInstance.setContactList(contactList);
+                    System.out.println(singletonInstance.getContactList().size());
+                    saveData();
+                    setAdapter();
+                }
                 break;
         }
+    }
+
+    private boolean formValidation() {
+        if(nameTxt.length() == 0) {
+            nameTxt.setError("This field is required");
+            return false;
+        }
+        if(phoneNum.length() == 0) {
+            phoneNum.setError("This field is required");
+            return false;
+        }
+        if(email.length() == 0) {
+            email.setError("This field is required");
+            return false;
+        } else {
+            String regex = "^(.+)@(.+)$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(email.getText());
+            if(matcher.matches() == false) {
+                email.setError("Email is not valid");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void setAdapter() {
