@@ -2,6 +2,7 @@ package com.example.contactlist;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,12 +12,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.contactlist.Adapters.ContactListAdapter;
 import com.example.contactlist.Models.ContactListModel;
@@ -45,17 +48,21 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.list);
         contactList = new ArrayList<ContactListModel>();
         singletonInstance = Singleton.getInstance();
+
+        // checks if there is any data in the shared preference
         if(loadData() != null) {
             singletonInstance.setContactList(loadData());
         }
+
+        //if there is data on singleton class it assigns to the contactList variable
         if(singletonInstance.getContactList() != null) {
             contactList = singletonInstance.getContactList();
         }
         setContactList();
-        System.out.println("Test");
         setAdapter();
-        FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton floatingBtn = findViewById(R.id.fab);
 
+        // handles the on swipe event, deletes the item from the contact list once swiped
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -64,20 +71,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                System.out.println("###############");
-                System.out.println(viewHolder.getAdapterPosition());
-                System.out.println("###############");
                 ContactListModel contactListData = contactList.get(viewHolder.getAdapterPosition());
                 int position = viewHolder.getAdapterPosition();
                 contactList.remove(viewHolder.getAdapterPosition());
                 singletonInstance.setContactList(contactList);
                 contactListAdapter.notifyItemRemoved(position);
+                Toast toast = Toast.makeText(getApplicationContext(),"Contact Deleted", Toast.LENGTH_SHORT);
+                toast.show();
                 saveData();
             }
+
         });
         itemTouchhelper.attachToRecyclerView(recyclerView);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        // on click listener for floating button
+        floatingBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddContact.class);
@@ -87,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // sets Adapter for recycler view
     private void setAdapter() {
         contactListAdapter = new ContactListAdapter(singletonInstance.getContactList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -95,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(contactListAdapter);
     }
 
+    // saves list to the singleton class
     public void setContactList() {
         singletonInstance.setContactList(contactList);
-        System.out.println(contactList);
     }
 
     public ArrayList<ContactListModel> loadData() {

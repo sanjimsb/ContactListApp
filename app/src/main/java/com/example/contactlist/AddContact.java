@@ -85,13 +85,11 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
 
     }
 
+    // on click listner when the save button is clicked
     public void onClick(View view) {
         String getName = String.valueOf(nameTxt.getText());
         String getEmail =  String.valueOf(email.getText());
         String getContactType =  contactTypesSpinner.getSelectedItem().toString();
-        System.out.println("$$$$$$$$$$$$$$");
-        System.out.println(getContactType);
-        System.out.println("$$$$$$$$$$$$$$");
         switch(view.getId()) {
             case R.id.button:
                 isFieldValid = formValidation();
@@ -111,6 +109,7 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         }
     }
 
+    // validates the form
     private boolean formValidation() {
         if(nameTxt.length() == 0) {
             nameTxt.setError("This field is required");
@@ -136,6 +135,7 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         return true;
     }
 
+    //creates the instance of Intent and sends to MainActivity
     private void setAdapter() {
         Intent intent = new Intent(AddContact.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
