@@ -1,10 +1,16 @@
 package com.example.contactlist.Adapters;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,9 +26,10 @@ import com.github.ivbaranov.mli.MaterialLetterIcon;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.MyViewHolder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.MyViewHolder>  {
     private ArrayList<ContactListModel> contactList;
 
     public ContactListAdapter(ArrayList<ContactListModel> getContactList) {
@@ -34,6 +41,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         private TextView phoneNum;
         private TextView email;
         private MaterialLetterIcon firstLetterHolder;
+        private TextView contactTypes;
+
 
         public MyViewHolder(final View view) {
             super(view);
@@ -41,8 +50,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             phoneNum = view.findViewById(R.id.textNumber);
             email = view.findViewById(R.id.textEmail);
             firstLetterHolder = view.findViewById(R.id.firstName);
-
+            contactTypes = view.findViewById(R.id.contactTypes);
         }
+
 
     }
 
@@ -59,14 +69,18 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         String name = contactList.get(position).getName();
         String phoneNum =  String.valueOf(contactList.get(position).getPhoneNum());
         String email = contactList.get(position).getEmail();
+        String contactType = contactList.get(position).getContactType();
         holder.nameTxt.setText(name);
         holder.phoneNum.setText(phoneNum);
         holder.email.setText(email);
+        holder.contactTypes.setText(contactType);
 
         Random rnd = new Random();
         int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         holder.firstLetterHolder.setLetter(String.valueOf(name.charAt(0)));
         holder.firstLetterHolder.setShapeColor(color);
+
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,6 +89,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 intent.putExtra("name",name);
                 intent.putExtra("phn",phoneNum);
                 intent.putExtra("email",email);
+                intent.putExtra("contactType",contactType);
                 intent.putExtra("position",String.valueOf(holder.getAdapterPosition()));
                 view.getContext().startActivity(intent);
             }

@@ -11,8 +11,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.contactlist.Adapters.ContactListAdapter;
@@ -23,6 +25,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,9 +41,10 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
     private RecyclerView recyclerView;
     private int currentPosition;
     private boolean isFieldValid;
-    SharedPreferences sharedpreferences;
+    public static SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "UserInput";
     public static final String PREFERENCE_KEY = "ContactList";
+    private Spinner contactTypesSpinner;
     ContactListAdapter adapter;
 
     @Override
@@ -56,12 +60,20 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
         nameTxt = findViewById(R.id.nameEditText);
         phoneNum = findViewById(R.id.phoneEditText);
         email = findViewById(R.id.emailEditText);
+        contactTypesSpinner = (Spinner) findViewById(R.id.contact_types);
+
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.contact_types, android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        contactTypesSpinner.setAdapter(spinnerAdapter);
 
         if(intent.getExtras() != null) {
             currentPosition = Integer.parseInt(intent.getStringExtra("position"));
             nameTxt.setText(intent.getStringExtra("name"));
             phoneNum.setText(intent.getStringExtra("phn"));
             email.setText(intent.getStringExtra("email"));
+            List<String> getOptions = Arrays.asList(getResources().getStringArray(R.array.contact_types));
+            int getPosition = getOptions.indexOf(intent.getStringExtra("contactType"));
+            contactTypesSpinner.setSelection(getPosition);
         }
 
 
@@ -76,15 +88,19 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
     public void onClick(View view) {
         String getName = String.valueOf(nameTxt.getText());
         String getEmail =  String.valueOf(email.getText());
+        String getContactType =  contactTypesSpinner.getSelectedItem().toString();
+        System.out.println("$$$$$$$$$$$$$$");
+        System.out.println(getContactType);
+        System.out.println("$$$$$$$$$$$$$$");
         switch(view.getId()) {
             case R.id.button:
                 isFieldValid = formValidation();
                 if (isFieldValid) {
                     if(intent.getExtras() != null) {
                         contactList.remove(currentPosition);
-                        contactList.add(currentPosition, new ContactListModel(getName, phoneNum.getText().toString(), getEmail));
+                        contactList.add(currentPosition, new ContactListModel(getName, phoneNum.getText().toString(), getEmail, getContactType));
                     } else {
-                        contactList.add(new ContactListModel(getName, phoneNum.getText().toString(), getEmail));
+                        contactList.add(new ContactListModel(getName, phoneNum.getText().toString(), getEmail, getContactType));
                     }
                     singletonInstance.setContactList(contactList);
                     System.out.println(singletonInstance.getContactList().size());
@@ -130,7 +146,7 @@ public class AddContact extends AppCompatActivity  implements View.OnClickListen
     }
 
     // saves contact details added by the users to the shared preference.
-    private void saveData() {
+    public void saveData() {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         Gson gson = new Gson();

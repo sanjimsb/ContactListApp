@@ -6,10 +6,11 @@ public class ContactListModel {
     private String email;
     private String contactType;
 
-    public ContactListModel(String name, String phoneNum, String email) {
+    public ContactListModel(String name, String phoneNum, String email, String contactType) {
         this.name = name;
         this.phoneNum = phoneNum;
         this.email = email;
+        this.contactType = contactType;
     }
 
     public String getName() {

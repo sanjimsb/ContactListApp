@@ -31,7 +31,7 @@
         android:inputType="number" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/contact_types"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nameEditText"
@@ -63,7 +63,7 @@
         android:layout_marginStart="100dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="100dp"
-        android:text="Button" />
+        android:text="Save" />
 
 
 </RelativeLayout>

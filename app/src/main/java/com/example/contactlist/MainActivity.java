@@ -13,7 +13,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.contactlist.Adapters.ContactListAdapter;
@@ -31,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Singleton singletonInstance;
     ListView listView;
-    ContactListAdapter adapter;
+    ContactListAdapter contactListAdapter;
     TextView getTextView;
+    public static final String MyPREFERENCES = "UserInput";
+    public static final String PREFERENCE_KEY = "ContactList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                System.out.println("###############");
                 System.out.println(viewHolder.getAdapterPosition());
+                System.out.println("###############");
                 ContactListModel contactListData = contactList.get(viewHolder.getAdapterPosition());
                 int position = viewHolder.getAdapterPosition();
                 contactList.remove(viewHolder.getAdapterPosition());
-                adapter.notifyItemRemoved(position);
+                singletonInstance.setContactList(contactList);
+                contactListAdapter.notifyItemRemoved(position);
+                saveData();
             }
         });
         itemTouchhelper.attachToRecyclerView(recyclerView);
@@ -80,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        adapter = new ContactListAdapter(singletonInstance.getContactList());
+        contactListAdapter = new ContactListAdapter(singletonInstance.getContactList());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(contactListAdapter);
     }
 
     public void setContactList() {
@@ -109,5 +117,15 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<ContactListModel> getContactArrayList = gson.fromJson(json, type);
 
         return getContactArrayList;
+    }
+
+    // saves contact details added by the users to the shared preference.
+    public void saveData() {
+        SharedPreferences sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(contactList);
+        editor.putString(PREFERENCE_KEY,json);
+        editor.commit();
     }
 }
